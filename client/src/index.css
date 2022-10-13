@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    .label {
+        @apply font-semibold flex
+    }
+
+    .input {
+       @apply w-full outline-none p-2 placeholder:text-sm border rounded-md focus:border-gray-500
+    }
+}
