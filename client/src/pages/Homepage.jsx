@@ -1,21 +1,30 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, Navigate } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
+const userInfo = {
+  fullName: '',
+  email: '',
+  password: '',
+  confirmPassword: '',
+  pic: ''
+}
+
+const API = axios.create({baseURL: 'http://localhost:5000'})
 
 function Homepage() {
-  const userInfo = {
-    fullName: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    profile: ''
-  }
-
   const [user, setUser] = useState(userInfo);
   const [loginType, setLoginType] = useState('login');  
   const [signUpType, setSignUpType] = useState('signup');  
   const [active, setActive] = useState(loginType);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [picLoading, setPicLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleAuth = (type) => {
     setActive(type)
@@ -26,20 +35,120 @@ function Homepage() {
   }
 
   const uploadProfile = (pic) => {
-    const mb = 1048000;
-    const picSize = Math.floor(pic.size / mb).toFixed(0)
     console.log(pic)
+    setPicLoading(true);
 
-    if(picSize >= 5) {
-      return console.log('Picture should be less than 5 MB, Picture Size is', picSize)
+    if(pic === undefined) {
+      toast.error("", {
+        position: toast.POSITION.TOP_RIGHT
+      })
+      setPicLoading(false);
+      return;
+    }
+    
+    if(pic.type === "image/jpeg" || pic.type === "image/png") {
+      const mb = 1048000;
+      const picSize = Math.floor(pic.size / mb).toFixed(0)
+  
+      if(picSize >= 5) {
+        return toast.error('Picture should be less than 5 MB, Picture Size is', {
+          theme: "light"
+        })
+      }
+
+      const data = new FormData();
+      data.append("file", pic);
+      data.append("upload_preset", "talky-chatty");
+      data.append("cloud_name", "dw7xy98ip");
+      data.append("folder", "talky-chatty")
+      fetch("https://api.cloudinary.com/v1_1/dw7xy98ip/image/upload", {
+        method: "post",
+        body: data
+      }).then((res) => res.json())
+        .then((data) => {
+          console.log('data', data)
+          setUser({...user, pic: data.url.toString()});
+          setPicLoading(false)
+        })
+        .catch((err) => {
+          console.log(err)
+          setPicLoading(false);
+        })
+
+    } else {
+      toast.warn("Please select an image", {
+        position: "top-right",
+        theme: "light"
+      })
+      setPicLoading(false)
+    }
+
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setLoading(true)
+
+    if(active === signUpType) {
+      // Sign up 
+
+      if(!user.fullName || !user.email || !user.password || !user.confirmPassword) {
+        setLoading(false)
+        return toast.error("Please fill all the fields", {})
+      }
+  
+      if(user.password !== user.confirmPassword) {
+        setLoading(false)
+        return toast.error("Passwords do not Match", {})
+      }
+
+      try {
+        console.log(user)
+        const { data } = await API.post(`/api/users`, user)
+        localStorage.setItem("userInfo", JSON.stringify(data))
+        toast.success("Registration Successfull")
+        setLoading(false);
+        // navigate("/chats")
+      } catch (error) {
+        if(error) {
+          const errorMessage = error.response.data.message;
+          toast.error(errorMessage)
+        }
+        setLoading(false);
+      }
+    } else {
+      
+      // Login
+
+      if(!user.email || !user.password) {
+        setLoading(false)
+        return toast.warn("Please fill all fields")
+      }
+
+      let loginUser = {
+        email: user.email,
+        password: user.password
+      }
+
+      try {
+        const { data } = await API.post(`/api/users/login`, loginUser)
+        localStorage.setItem("userInfo", JSON.stringify(data))
+        toast.success("Sign In  Successfull")
+        setLoading(false)
+        navigate('/chats')
+      } catch (error) {
+        if(error) {
+          const errorMessage = error.response.data.message;
+          toast.error(errorMessage);
+        }
+        setLoading(false);
+      }
     }
   }
 
-  console.log('user', user)
-
-
   return (
     <div className="w-full h-full">
+      <ToastContainer />
       <div className='bg-background bg h-full w-full py-12 lg:py-0 lg:h-screen bg-repeat bg-[length:110px_110px]'>
         <div className='h-full flex justify-evenly items-center'>
           
@@ -69,7 +178,7 @@ function Homepage() {
                   <>
                     <div className='mb-4'>
                       <h3 className='label'>Email <span className='inline-block pt-1 ml-1 text-red-500'>*</span></h3>
-                      <input type='text'  value={user.email} name='email' placeholder='Enter your name' onChange={(e) => handleChange(e)} className='input'/>
+                      <input type='email' value={user.email} name='email' placeholder='Enter your name' onChange={(e) => handleChange(e)} className='input'/>
                     </div>
                     <div className='mb-4'>
                       <h3 className='label'>Password <span className='inline-block pt-1 ml-1 text-red-500'>*</span></h3>
@@ -92,12 +201,18 @@ function Homepage() {
                     </div>
                     <div className='mb-4'>
                       <h3 className='label'>Upload your Picture</h3>
-                      <input type='file' accept='image/*' value={user.profile} name='profile' placeholder='Enter your name' onChange={(e) => uploadProfile(e.target.files[0])} className='input'/>
+                      <input type='file' accept='image/*' name='pic' onChange={(e) => uploadProfile(e.target.files[0])} className='input'/>
+                      {picLoading && <p className='text-center font-bold italic mt-2'>Loading...</p>}
                     </div>
                   </>
                 }
                 <div>
-                  <button className='text-center w-full bg-orange-500 font-bold text-xl py-2 rounded-sm text-white'>Sign Up</button>
+                  <button onClick={handleSubmit} className={`text-center w-full bg-orange-500 font-bold text-xl py-2 rounded-sm text-white disabled:bg-orange-300`} disabled={loading}>
+                    {active === loginType && <p>{loading ? 'Processing' : 'Login'}</p>}
+                    {
+                      active === signUpType && <p>{loading ? 'Processing' : 'Register'}</p>
+                    }
+                  </button>
                 </div>
               </div>
             </div>
