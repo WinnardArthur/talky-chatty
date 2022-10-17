@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Link, Navigate } from 'react-router-dom';
-import { toast, ToastContainer } from 'react-toastify';
+import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 const userInfo = {
   fullName: '',
@@ -25,6 +26,13 @@ function Homepage() {
   const [picLoading, setPicLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+
+    if(userInfo) navigate("/chats")
+
+  }, [navigate])
 
   const handleAuth = (type) => {
     setActive(type)
@@ -108,7 +116,7 @@ function Homepage() {
         localStorage.setItem("userInfo", JSON.stringify(data))
         toast.success("Registration Successfull")
         setLoading(false);
-        // navigate("/chats")
+        navigate("/chats")
       } catch (error) {
         if(error) {
           const errorMessage = error.response.data.message;
@@ -148,8 +156,7 @@ function Homepage() {
 
   return (
     <div className="w-full h-full">
-      <ToastContainer />
-      <div className='bg-background bg h-full w-full py-12 lg:py-0 lg:h-screen bg-repeat bg-[length:110px_110px]'>
+      <div className='bg-background h-full w-full py-12 lg:py-0 lg:h-screen bg-repeat bg-[length:110px_110px]'>
         <div className='h-full flex justify-evenly items-center'>
           
           <div>
@@ -213,6 +220,10 @@ function Homepage() {
                       active === signUpType && <p>{loading ? 'Processing' : 'Register'}</p>
                     }
                   </button>
+                  {
+                    active === loginType &&
+                    <button className='text-center w-full bg-red-500 mt-4 font-semibold text-lg py-2 rounded-sm text-white'>Guest User Credentials</button>
+                  }
                 </div>
               </div>
             </div>

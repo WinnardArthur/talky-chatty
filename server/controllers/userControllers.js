@@ -57,14 +57,18 @@ exports.authUser = async (req, res) => {
 }
 
 exports.allUsers = async (req, res) => {
-    const keyword = req.query.search ? {
-        $or: [
-            { name: { $regex: req.query.search, $options: "i" }},
-            { email: { $regex: req.query.search, $options: "i"}}
-        ]
-    } : {};
-
-    const users = await User.find(keyword).find({_id: { $ne: req.user._id }})
-
-    res.send(users); 
+    try {
+        const keyword = req.query.search ? {
+            $or: [
+                { name: { $regex: req.query.search, $options: "i" }},
+                { email: { $regex: req.query.search, $options: "i"}}
+            ]
+        } : {};
+    
+        const users = await User.find(keyword).find({_id: { $ne: req.user._id }})
+    
+        res.send(users); 
+    } catch (error) {
+        res.status(400).json({message: error.message})
+    }
 }

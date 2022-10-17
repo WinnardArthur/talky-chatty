@@ -3,6 +3,9 @@
 @tailwind utilities;
 
 @layer base {
+    body {
+        @apply bg-background bg-repeat bg-[length:110px_110px]
+    }
     .label {
         @apply font-semibold flex
     }

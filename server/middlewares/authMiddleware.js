@@ -9,8 +9,6 @@ exports.protect = async (req, res, next) => {
             return res.status(401).json({message: 'Not authorized, no token'})
         }
 
-        console.log('length', token.length)
-
         const jwtAuth = token.length < 500;
 
         if(token && jwtAuth) {
