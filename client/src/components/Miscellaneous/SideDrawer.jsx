@@ -7,6 +7,7 @@ import ProfileModal from './ProfileModal';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import UserListItem from '../UserAvatar/UserListItem';
+import { useEffect } from 'react';
 
 const colors = ['red', 'blue', 'gray', 'orange', 'indigo']
 
@@ -21,7 +22,7 @@ const SideDrawer = () => {
     const [showProfile, setShowProfile] = useState(false);
     const [showSidebar, setShowSidebar] = useState(false);
     const navigate = useNavigate();
-    const { user } = ChatState();
+    const { user, setSelectedChat, chats, setChats } = ChatState();
     const { user: { responseUser} } = ChatState();
 
     const logoutHandler = () => {
@@ -54,10 +55,9 @@ const SideDrawer = () => {
 
             const { data } = await API.get(`/api/users?search=${search}`, config)
 
-            console.log('data', data)
-
             setLoading(false);
-            setSearchResults(data)
+            setSearch("");
+            setSearchResults(data);
         } catch (error) {
             console.log('error', error)
             if(error && error.response.data) {
@@ -69,7 +69,31 @@ const SideDrawer = () => {
         }
     }
 
-    const accessChat = (userId) => {}
+    const accessChat = async (userId) => {
+        setLoading(true)
+
+        try {
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${user.token}`
+                }
+            }
+
+            const { data } = await API.post('/api/chat', {userId}, config)
+            
+            if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats])
+
+            setSelectedChat(data);
+            setLoading(false);
+            setShowSidebar(false);
+            setSearchResults([])
+        } catch (error) {
+            if(error && error.response.data) {
+                toast.error(error.response.data.message)
+            }
+            setLoading(false);
+        }
+    }
 
 
     return (
@@ -86,7 +110,7 @@ const SideDrawer = () => {
                 <div className='flex items-center justify-evenly cursor-pointer' onClick={() => setShowMore(!showMore)}>
                     <div>
                         {responseUser.pic.length > 0 ? 
-                            <img src={responseUser.pic} alt='user' className='w-8 h-8'/> :
+                            <img src={responseUser.pic} alt='user' className='w-8 h-8 rounded-full'/> :
                             <div className={`w-8 h-8 text-sm cursor-pointer flex justify-center items-center font-bold text-white rounded-full`} style={{background: randomColor}}>{userLogo(responseUser.name)}</div>
                         }
                     </div>
