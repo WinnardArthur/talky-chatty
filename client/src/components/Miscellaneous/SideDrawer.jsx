@@ -1,13 +1,13 @@
 import React, { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { FaSearch, FaBell, FaChevronDown } from 'react-icons/fa';
-import { MdVisibility } from 'react-icons/md';
 import { ChatState } from '../../Context/ChatProvider';
 import ProfileModal from './ProfileModal';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import UserListItem from '../UserAvatar/UserListItem';
 import { useEffect } from 'react';
+import decode from 'jwt-decode';
 
 const colors = ['red', 'blue', 'gray', 'orange', 'indigo']
 
@@ -24,6 +24,18 @@ const SideDrawer = () => {
     const navigate = useNavigate();
     const { user, setSelectedChat, chats, setChats } = ChatState();
     const { user: { responseUser} } = ChatState();
+
+
+    useEffect(() => {
+        if(user) {
+            const token = user?.token;
+            const decodedToken = decode(token);
+           if(decodedToken.exp * 1000 < new Date().getTime()) {
+                return logoutHandler()
+           }
+        }
+
+    }, [navigate])
 
     const logoutHandler = () => {
         localStorage.removeItem("userInfo");
@@ -46,7 +58,6 @@ const SideDrawer = () => {
 
         setLoading(true)
         try {
-
             const config = {
                 headers: {
                     Authorization: `Bearer ${user.token}`
@@ -59,7 +70,6 @@ const SideDrawer = () => {
             setSearch("");
             setSearchResults(data);
         } catch (error) {
-            console.log('error', error)
             if(error && error.response.data) {
                 let { message } = error.response.data 
 
