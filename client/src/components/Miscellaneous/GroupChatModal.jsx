@@ -85,7 +85,7 @@ const GroupChatModal = ({ showCreateGroupModal, setShowCreateGroupModal }) => {
     <div>
          <>
         { 
-            <div className='fixed top-0 left-0 bg-black/60 w-full h-full' onClick={() => setShowCreateGroupModal(!showCreateGroupModal)}>
+            <div className='fixed top-0 left-0 bg-black/60 w-full h-full z-50' onClick={() => setShowCreateGroupModal(!showCreateGroupModal)}>
                 <div className='flex justify-center items-center h-full'>
                     <div onClick={e => e.stopPropagation()} className='bg-white flex flex-col items-center justify-evenly relative w-[80%] h-[350px] sm:w-[50%] sm:h-[450px] lg:w-1/3 lg:h-[500px] 2xl:h-[500px] rounded-md opacity-1 pt-3'>
                         <AiOutlineClose className='cursor-pointer absolute right-3 top-3 text-2xl' onClick={() => setShowCreateGroupModal(!showCreateGroupModal)} />

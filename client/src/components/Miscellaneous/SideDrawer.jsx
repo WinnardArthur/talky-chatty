@@ -107,7 +107,7 @@ const SideDrawer = () => {
 
 
     return (
-    <div>
+    <div onClick={() => setShowMore(false)}>
         {/* Header */}
         <div className='bg-gray-50 px-4 flex justify-between items-center py-2'>
             <div onClick={() => setShowSidebar(!showSidebar)} className='flex items-center border p-2 bg-white cursor-pointer'>
@@ -115,7 +115,7 @@ const SideDrawer = () => {
                 <input type='text' placeholder='Search User' className='border-none outline-none cursor-pointer'/>
             </div>
             <h1 className='text-2xl font-bold text-orange-500'>Talky-Chatty</h1>
-            <div className='flex items-center justify-evenly w-[150px] relative'>
+            <div className='flex items-center justify-evenly w-[150px] relative' onClick={(e) => e.stopPropagation()}>
                 <FaBell />
                 <div className='flex items-center justify-evenly cursor-pointer' onClick={() => setShowMore(!showMore)}>
                     <div>
