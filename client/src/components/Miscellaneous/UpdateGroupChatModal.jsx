@@ -49,6 +49,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, showUpdateGroupModal,
         }
     }
 
+
     const handleAddUser = async (user1) => {
         if(selectedChat.users.find((u) => u._id === user1._id)) {
            return toast.warn("User Already in group!", {position: 'bottom-right'})
@@ -83,7 +84,8 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, showUpdateGroupModal,
         }
     }
 
-    const handleRename = async () => {
+    const handleRename = async (e) => {
+        e.preventDefault();
         if (!groupChatName) return;
 
         try {
@@ -159,7 +161,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, showUpdateGroupModal,
                         placeholder="Chat Name" 
                         onChange={(e) => setGroupChatName(e.target.value)}
                     />
-                    <button onClick={handleRename} className='border-2 font-semibold border-orange-400 bg-orange-400 hover:bg-transparent rounded px-2 py-2 text-sm rounded-l-none'>
+                    <button onClick={(e) => handleRename(e)} className='border-2 font-semibold border-orange-400 bg-orange-400 hover:bg-transparent rounded px-2 py-2 text-sm rounded-l-none'>
                         {renameLoading ? 'Loading...' : 'Update'} 
                     </button>
                 </form>
@@ -177,7 +179,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, showUpdateGroupModal,
 
                 
 
-                <div className='w-[80%] my-4 overflow-y-scroll scrollbar scrollbar-track-orange-100 scrollbar-thumb-orange-300 scrollbar-thin max-h-[200px ]'>
+                <div className='w-[80%] my-4 overflow-y-scroll scrollbar scrollbar-track-orange-100 scrollbar-thumb-orange-300 scrollbar-thin max-h-[200px]'>
                     {loading ? <p className='text-center'>Loading...</p> : (
                        <div>
                         {searchResults?.slice(0, 4).map((user) => (

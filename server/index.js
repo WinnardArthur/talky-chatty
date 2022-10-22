@@ -4,6 +4,7 @@ const cors = require('cors');
 const PORT = process.env.PORT || 5000;
 const userRoutes = require('./routes/userRoutes');
 const chatRoutes = require('./routes/chatRoutes');
+const messageRoute = require('./routes/messageRoutes')
 
 const app = express();
 require('dotenv').config();
@@ -19,7 +20,8 @@ mongoose.connect(process.env.MONGO_URI, {
 
 
 app.use('/api/users', userRoutes);
-app.use('/api/chat', chatRoutes)
+app.use('/api/chat', chatRoutes);
+app.use('/api/message', messageRoute)
 
 app.use('*', (req, res) => {
     res.json({message: '404: PAGE NOT FOUND'})
