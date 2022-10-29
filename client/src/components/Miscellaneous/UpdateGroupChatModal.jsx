@@ -9,7 +9,7 @@ import UserListItem from '../UserAvatar/UserListItem';
 
 const API = axios.create({baseURL: 'http://localhost:5000'})
 
-const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, showUpdateGroupModal, setShowUpdateGroupModal }) => {
+const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, showUpdateGroupModal, fetchMessages, setShowUpdateGroupModal }) => {
     const [loading, setLoading] = useState(false);
     const [renameLoading, setRenameLoading] = useState(false);
     const [groupChatName, setGroupChatName] = useState("");
@@ -38,7 +38,8 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, showUpdateGroupModal,
             }, config)
 
             user1._id === user._id ? setSelectedChat() : setSelectedChat(data);
-            setFetchAgain(!fetchAgain)
+            setFetchAgain(!fetchAgain);
+            fetchMessages();
             setLoading(false);
             toast.success("User removed", {position: "bottom-left"})
         } catch (error) {
@@ -174,10 +175,6 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, showUpdateGroupModal,
                         onChange={(e) => handleSearch(e.target.value)}
                     />
                 </form>
-
-                
-
-                
 
                 <div className='w-[80%] my-4 overflow-y-scroll scrollbar scrollbar-track-orange-100 scrollbar-thumb-orange-300 scrollbar-thin max-h-[200px]'>
                     {loading ? <p className='text-center'>Loading...</p> : (

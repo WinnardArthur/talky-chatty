@@ -6,6 +6,10 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 
+const API = axios.create({baseURL: 'http://localhost:5000'})
+
+const colors = ['#EF4444', '#10B981', '#3B82F6', '#6366F1', '#8B5CF6', '#F97316', '#10B981', '#14B8A6', '#3B82F6', '#F43F5E'];
+
 const userInfo = {
   fullName: '',
   email: '',
@@ -14,7 +18,6 @@ const userInfo = {
   pic: ''
 }
 
-const API = axios.create({baseURL: 'http://localhost:5000'})
 
 function Homepage() {
   const [user, setUser] = useState(userInfo);
@@ -93,6 +96,12 @@ function Homepage() {
 
   }
 
+  const randomColor = () => {
+    let randomValue = Math.floor(Math.random() * colors.length);
+
+    return colors[randomValue]
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
@@ -113,6 +122,10 @@ function Homepage() {
       try {
         console.log(user)
         const { data } = await API.post(`/api/users`, user)
+
+        if(data.responseUser.pic.length < 1) {
+          localStorage.setItem("profileColor", JSON.stringify(randomColor()))
+        }
         localStorage.setItem("userInfo", JSON.stringify(data))
         toast.success("Registration Successfull")
         setLoading(false);
@@ -139,7 +152,10 @@ function Homepage() {
       }
 
       try {
-        const { data } = await API.post(`/api/users/login`, loginUser)
+        const { data } = await API.post(`/api/users/login`, loginUser);
+        if(data.responseUser.pic.length < 1) {
+          localStorage.setItem("profileColor", JSON.stringify(randomColor()))
+        }
         localStorage.setItem("userInfo", JSON.stringify(data))
         toast.success("Sign In  Successfull")
         setLoading(false)

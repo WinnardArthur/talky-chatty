@@ -8,8 +8,8 @@ import axios from 'axios';
 import UserListItem from '../UserAvatar/UserListItem';
 import { useEffect } from 'react';
 import decode from 'jwt-decode';
+import { getSender, userLogo } from '../../config/ChatLogic';
 
-const colors = ['red', 'blue', 'gray', 'orange', 'indigo']
 
 const API = axios.create({baseURL: 'http://localhost:5000'})
 
@@ -17,14 +17,14 @@ const SideDrawer = () => {
     const [search, setSearch] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [loadingChat, setLoadingChat] = useState(false);
     const [showMore, setShowMore] = useState(false);
     const [showProfile, setShowProfile] = useState(false);
     const [showSidebar, setShowSidebar] = useState(false);
+    const [showNotification, setShowNotification] = useState(false);
     const navigate = useNavigate();
-    const { user, setSelectedChat, chats, setChats } = ChatState();
+    const { user, setSelectedChat, chats, setChats, notification, setNotification } = ChatState();
     const { user: { responseUser} } = ChatState();
-
+    const profileColor = JSON.parse(localStorage.getItem('profileColor'))
 
     useEffect(() => {
         if(user) {
@@ -39,17 +39,10 @@ const SideDrawer = () => {
 
     const logoutHandler = () => {
         localStorage.removeItem("userInfo");
+        localStorage.removeItem("profileColor")
         navigate("/")
     }
- 
-    const userLogo = (arrName) => {
-        return arrName.split(" ").map(singleName => String(singleName).charAt(0))
-    }
 
-    const randomColor = useMemo(() => {
-        let randomVal = Math.floor(Math.random() * colors.length);
-        return colors[randomVal];
-    }, [localStorage.getItem('userInfo')]) 
 
     const handleSearch = async () => {
         if(!search) {
@@ -116,18 +109,39 @@ const SideDrawer = () => {
             </div>
             <h1 className='text-2xl font-bold text-orange-500'>Talky-Chatty</h1>
             <div className='flex items-center justify-evenly w-[150px] relative' onClick={(e) => e.stopPropagation()}>
-                <FaBell />
+                <div>
+                    <div className='relative'>
+                        <FaBell onClick={() => setShowNotification(prevNotif => !prevNotif)} className='cursor-pointer'/>
+                        {notification.length > 0 && 
+                        <div className='absolute w-4 h-4 rounded-full bg-red-600 top-[-7px] left-2 font-semibold text-white text-[10px] flex justify-center items-center'>{notification?.length}</div>
+                        }
+                    </div>
+                    {showNotification && 
+                    <div className='absolute bg-gray-50 p-2 text-sm left-0 top-8'>
+                        {!notification.length && <p>No New Messages</p>}
+                        {notification.length > 0 && notification.map(notif => (
+                            <div className='cursor-pointer hover:bg-gray-200' key={notif._id} onClick={() => {
+                                setSelectedChat(notif.chat)
+                                setNotification(notification.filter(n => n._id !== notif._id))
+                            }}
+                            >
+                                {notif.chat.isGroupChat ? `New Message in ${notif.chat.chatName}` : `New Message from ${getSender(user, notif.chat.users)}`}
+                            </div>
+                        ))}
+                    </div>
+                    }
+                </div>
                 <div className='flex items-center justify-evenly cursor-pointer' onClick={() => setShowMore(!showMore)}>
                     <div>
                         {responseUser.pic.length > 0 ? 
                             <img src={responseUser.pic} alt='user' className='w-8 h-8 rounded-full'/> :
-                            <div className={`w-8 h-8 text-sm cursor-pointer flex justify-center items-center font-bold text-white rounded-full`} style={{background: randomColor}}>{userLogo(responseUser.name)}</div>
+                            <div className={`w-8 h-8 cursor-pointer flex justify-center items-center font-semibold text-white rounded-full`} style={{"backgroundColor": `${profileColor.length > 0 && profileColor}`}}>{userLogo(user)}</div>
                         }
                     </div>
                     <FaChevronDown className='ml-2'/>
                 </div>
                 {showMore && 
-                    <div className='absolute bg-gray-50 top-10 right-0 w-[180px]'>
+                    <div className='absolute bg-gray-50 top-10 right-0 w-[180px] z-10'>
                         <button className='text-center block w-full py-2 border-b-2 cursor-pointer hover:bg-gray-200' 
                             onClick={() => {
                                 setShowProfile(!showProfile)
@@ -140,7 +154,7 @@ const SideDrawer = () => {
                     </div>
                 }
             </div>
-            <ProfileModal user={responseUser} showProfile={showProfile} setShowProfile={setShowProfile} userLogo={userLogo}/>                    
+            <ProfileModal user={user} showProfile={showProfile} setShowProfile={setShowProfile} profileColor={profileColor}/>                    
         </div>
 
         {/* Drawer */}
