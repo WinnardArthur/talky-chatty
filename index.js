@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const PORT = process.env.PORT || 5000;
+const path = require('path');
 const userRoutes = require('./routes/userRoutes');
 const chatRoutes = require('./routes/chatRoutes');
 const messageRoute = require('./routes/messageRoutes')
@@ -13,8 +14,6 @@ app.use(cors());
 app.use(express.json());
 
 mongoose.connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true 
 }).then(() => console.log('Database connected'))
 .catch((err) => console.log('Error', err))
 
@@ -27,6 +26,19 @@ app.use('*', (req, res) => {
     res.json({message: '404: PAGE NOT FOUND'})
 })
 
+
+// Production
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, "client/build")))
+
+    app.get('*', (req, res) => {
+        res.sendFile(path.join(__dirname, "client", "build", "index.html"))
+    })
+} else {
+    app.get("/", (req, res) => {
+        res.send("API running successfully...")
+    })
+}
 
 
 const server = app.listen(PORT, () => console.log('Server running successfully'))
@@ -62,4 +74,3 @@ io.on("connection", (socket) => {
     socket.on("typing", (room) => socket.to(room).emit("typing"));
     socket.on("stop typing", (room) => socket.to(room).emit("stop typing"))
 })  
-            // if(user._id == newMessageReceived.sender._id) return;
