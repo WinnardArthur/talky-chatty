@@ -22,10 +22,6 @@ app.use('/api/users', userRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/message', messageRoute)
 
-app.use('*', (req, res) => {
-    res.json({message: '404: PAGE NOT FOUND'})
-})
-
 
 // Production
 if (process.env.NODE_ENV === 'production') {
