@@ -44,5 +44,5 @@ export const isSameUser = (messages, m, i) => {
 }
 
 export const userLogo = (user) => {
-    return user?.responseUser?.name.charAt(0).toUpperCase();
+    return user?.responseUser ? user?.responseUser?.name.charAt(0).toUpperCase() : user?.name.charAt(0)
 }
