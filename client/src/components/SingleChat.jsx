@@ -11,7 +11,7 @@ import { useEffect } from 'react';
 import ScrollableChat from './ScrollableChat';
 import { io } from 'socket.io-client';
 import { useRef } from 'react';
-import { rootUrl } from '../globals';
+import { rootUrl } from '../global';
 
 const API = axios.create({baseURL: rootUrl});
 

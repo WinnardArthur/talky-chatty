@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import UserBadgeItem from '../UserAvatar/UserBadgeItem';
 import axios from 'axios';
 import UserListItem from '../UserAvatar/UserListItem';
-import { rootUrl } from '../global'
+import { rootUrl } from '../../global'
 
 
 const API = axios.create({baseURL: rootUrl})

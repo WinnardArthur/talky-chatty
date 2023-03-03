@@ -9,7 +9,7 @@ import UserListItem from '../UserAvatar/UserListItem';
 import { useEffect } from 'react';
 import decode from 'jwt-decode';
 import { getSender, userLogo } from '../../config/ChatLogic';
-import { rootUrl } from '../global'
+import { rootUrl } from '../../global'
 
 
 const API = axios.create({baseURL: rootUrl})
