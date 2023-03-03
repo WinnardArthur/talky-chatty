@@ -25,7 +25,7 @@ const SideDrawer = () => {
     const navigate = useNavigate();
     const { user, setSelectedChat, chats, setChats, notification, setNotification } = ChatState();
     const { user: { responseUser} } = ChatState();
-    const profileColor = JSON.parse(localStorage.getItem('profileColor'))
+    const profileColor = JSON.parse(localStorage.getItem('profileColor')) || 'indigo';
 
     useEffect(() => {
         if(user) {
@@ -136,7 +136,7 @@ const SideDrawer = () => {
                     <div>
                         {responseUser.pic.length > 0 ? 
                             <img src={responseUser.pic} alt='user' className='w-8 h-8 rounded-full'/> :
-                            <div className={`w-8 h-8 cursor-pointer flex justify-center items-center font-semibold text-white rounded-full`} style={{"backgroundColor": `${profileColor.length > 0 && profileColor}`}}>{userLogo(user)}</div>
+                            <div className={`w-8 h-8 cursor-pointer flex justify-center items-center font-semibold text-white rounded-full`} style={{"backgroundColor": `${profileColor.length > 0 && profileColor}`}}>{userLogo(responseUser)}</div>
                         }
                     </div>
                     <FaChevronDown className='ml-2'/>
