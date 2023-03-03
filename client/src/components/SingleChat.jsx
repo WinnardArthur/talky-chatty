@@ -28,6 +28,7 @@ const SingleChat = ({fetchAgain, setFetchAgain}) => {
     const [socketConnected, setSocketConnected] = useState(false);
     const [typing, setTyping] = useState(false)
     const [isTyping, setIsTyping] = useState(false);
+    const profileColor = JSON.parse(localStorage.getItem('profileColor')) || 'indigo';
     
     const latestMessageRef = useRef();
 
@@ -159,7 +160,7 @@ const SingleChat = ({fetchAgain, setFetchAgain}) => {
                         <div>
                             {getSender(user, selectedChat.users)}
                             <MdVisibility className='absolute top-[6px] right-1 w-6 h-6 text-gray-600 cursor-pointer' onClick={() => setShowProfile(!showProfile)}/>
-                            <ProfileModal user={getSenderFull(user, selectedChat.users)} showProfile={showProfile} setShowProfile={setShowProfile} userLogo={userLogo}/>
+                            <ProfileModal user={getSenderFull(user, selectedChat.users)} showProfile={showProfile} setShowProfile={setShowProfile} userLogo={userLogo} profileColor={profileColor}/>
                         </div>
                     ) : (
                         <div>
