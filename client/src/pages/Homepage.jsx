@@ -209,7 +209,7 @@ function Homepage() {
                       <div className='relative'>
                         <input type={showPassword ? 'text' : 'password'} value={user.password} name='password' placeholder='Enter your name' onChange={(e) => handleChange(e)} className='input'/>
                         <div  
-                          onClick={(e) => setShowPassword(!showPassword)} className='absolute right-0 top-0 bg-slate-200 h-full cursor-pointer flex items-center px-3'>Show</div>
+                          onClick={(e) => setShowPassword(!showPassword)} className='absolute right-0 top-0 bg-slate-200 h-full cursor-pointer flex items-center px-3'>{showPassword ? 'Hide' : 'Show'}</div>
                       </div>
                     </div>
                   </>
@@ -220,7 +220,7 @@ function Homepage() {
                       <h3 className='label'>Confirm Password <span className='inline-block pt-1 ml-1 text-red-500'>*</span></h3>
                       <div className='relative'>
                         <input type={showConfirmPassword ? 'text' : 'password'} value={user.confirmPassword} name='confirmPassword' placeholder='Enter your name' onChange={(e) => handleChange(e)} className='input'/>
-                        <div name='password' onClick={(e) => setShowConfirmPassword(!showConfirmPassword)} className='absolute right-0 top-0 bg-slate-200 h-full cursor-pointer flex items-center px-3'>Show</div>
+                        <div name='password' onClick={(e) => setShowConfirmPassword(!showConfirmPassword)} className='absolute right-0 top-0 bg-slate-200 h-full cursor-pointer flex items-center px-3'>{showConfirmPassword ? 'Hide' : 'Show'}</div>
                       </div>
                     </div>
                     <div className='mb-4'>
@@ -239,7 +239,9 @@ function Homepage() {
                   </button>
                   {
                     active === loginType &&
-                    <button className='text-center w-full bg-red-500 mt-4 font-semibold text-lg py-2 rounded-sm text-white'>Guest User Credentials</button>
+                    <button type="button" onClick={() => {
+                      setUser((prevUser) => ({...prevUser, email: 'guestuser@gmail.com', password: 'guest_user'}))
+                    }} className='text-center w-full bg-red-500 mt-4 font-semibold text-lg py-2 rounded-sm text-white'>Guest User Credentials</button>
                   }
                 </div>
               </div>
