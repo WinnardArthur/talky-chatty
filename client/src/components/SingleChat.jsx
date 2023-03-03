@@ -11,9 +11,10 @@ import { useEffect } from 'react';
 import ScrollableChat from './ScrollableChat';
 import { io } from 'socket.io-client';
 import { useRef } from 'react';
+import { rootUrl } from '../globals';
 
-const API = axios.create({baseURL: 'http://localhost:5000'});
-const ENDPOINT = "http://localhost:5000";
+const API = axios.create({baseURL: rootUrl});
+
 var selectedChatCompare, socket;
 
 
@@ -36,7 +37,7 @@ const SingleChat = ({fetchAgain, setFetchAgain}) => {
 
 
     useEffect(() => {
-        socket = io(ENDPOINT);
+        socket = io(rootUrl);
         socket.emit("setup", user);
         socket.on('connected', () => {
             setSocketConnected(true)

@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import { ChatState } from '../../Context/ChatProvider';
 import UserBadgeItem from '../UserAvatar/UserBadgeItem';
 import UserListItem from '../UserAvatar/UserListItem';
+import { rootUrl } from '../../global'
 
 const GroupChatModal = ({ showCreateGroupModal, setShowCreateGroupModal }) => {
     const [groupChatName, setGroupChatName] = useState();
@@ -16,7 +17,7 @@ const GroupChatModal = ({ showCreateGroupModal, setShowCreateGroupModal }) => {
 
     const { user, chats, setChats } = ChatState();
 
-    const API = axios.create({baseURL: 'http://localhost:5000'});
+    const API = axios.create({baseURL: rootUrl});
 
     const handleSearch = async (query) => {
         setSearch(query)

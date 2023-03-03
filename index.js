@@ -41,7 +41,7 @@ const server = app.listen(PORT, () => console.log('Server running successfully')
 
 const io = require('socket.io')(server, {
     cors: {
-        origin: 'http://localhost:3000'
+        origin: process.env.NODE_ENV === 'production' ? process.env.CONNECTION_URL : 'http://localhost:3000'
     },
     pingTimeout: 60000
 })

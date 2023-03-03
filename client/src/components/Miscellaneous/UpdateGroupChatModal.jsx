@@ -5,9 +5,10 @@ import { toast } from 'react-toastify';
 import UserBadgeItem from '../UserAvatar/UserBadgeItem';
 import axios from 'axios';
 import UserListItem from '../UserAvatar/UserListItem';
+import { rootUrl } from '../global'
 
 
-const API = axios.create({baseURL: 'http://localhost:5000'})
+const API = axios.create({baseURL: rootUrl})
 
 const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, showUpdateGroupModal, fetchMessages, setShowUpdateGroupModal }) => {
     const [loading, setLoading] = useState(false);

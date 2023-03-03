@@ -5,8 +5,9 @@ import "react-toastify/dist/ReactToastify.css";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
+import { rootUrl } from '../global'
 
-const API = axios.create({baseURL: 'http://localhost:5000'})
+const API = axios.create({baseURL: rootUrl})
 
 const colors = ['#EF4444', '#10B981', '#3B82F6', '#6366F1', '#8B5CF6', '#F97316', '#10B981', '#14B8A6', '#3B82F6', '#F43F5E'];
 

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useState } from 'react';
 import ChatBox from '../components/ChatBox';
 import SideDrawer from '../components/Miscellaneous/SideDrawer';

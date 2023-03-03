@@ -9,9 +9,10 @@ import UserListItem from '../UserAvatar/UserListItem';
 import { useEffect } from 'react';
 import decode from 'jwt-decode';
 import { getSender, userLogo } from '../../config/ChatLogic';
+import { rootUrl } from '../global'
 
 
-const API = axios.create({baseURL: 'http://localhost:5000'})
+const API = axios.create({baseURL: rootUrl})
 
 const SideDrawer = () => {
     const [search, setSearch] = useState('');

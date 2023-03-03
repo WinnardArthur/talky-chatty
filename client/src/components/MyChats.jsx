@@ -5,9 +5,9 @@ import axios from 'axios';
 import { getSender } from '../config/ChatLogic';
 import { AiOutlinePlus } from 'react-icons/ai';
 import GroupChatModal from './Miscellaneous/GroupChatModal';
+import { rootUrl } from '../global';
 
-
-const API = axios.create({baseURL: 'http://localhost:5000'})
+const API = axios.create({baseURL: rootUrl})
 
 const MyChats = ({ fetchAgain }) => {
   const [loggedUser, setLoggedUser] = useState();
