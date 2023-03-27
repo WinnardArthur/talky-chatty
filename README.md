@@ -7,7 +7,7 @@ Click on the link below to watch a full video demo of this application.\
 
 ## Available scripts
 
-### To run frontend:  
+### To run client:  
 Move into client directory and run
 ### `npm start`
 
